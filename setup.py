@@ -6,10 +6,21 @@ from setuptools import setup, find_packages
 here = os.path.abspath(os.path.dirname(__file__))
 README = open(os.path.join(here, 'README.md')).read()
 CHANGES = open(os.path.join(here, 'CHANGES.md')).read()
-install_requires = open("requirements/common.txt").readlines()
-tests_require = open("requirements/testing.txt").readlines()
 
 version = '0.0.1b0'
+
+install_requires = [
+        # CI fails to build unless a version (same as in eduid_am) is required here :(
+        'pymongo >= 2.8,<3',
+        'eduid_am >= 0.6.0,<0.7.0',
+        'eduid_userdb >= 0.2.4b0',
+]
+
+tests_require = [
+        'nose>=1.2.1',
+        'nosexcover>=1.0.8',
+        'coverage>=3.6',
+]
 
 setup(name='eduid-proofing-amp',
       version=version,

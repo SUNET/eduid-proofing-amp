@@ -107,8 +107,8 @@ def attribute_fetcher(context, user_id):
     """
 
     attributes = {}
-    logger.debug('Trying to get user with _id: {} from {}.'.format(user_id, context.dashboard_userdb))
-    user = context.dashboard_userdb.get_user_by_id(user_id)
+    logger.debug('Trying to get user with _id: {} from {}.'.format(user_id, context.userdb))
+    user = context.userdb.get_user_by_id(user_id)
     logger.debug('User: {} found.'.format(user))
     user_dict = user.to_dict(old_userdb_format=True)
 
@@ -125,7 +125,8 @@ def attribute_fetcher(context, user_id):
     logger.debug('Will set attributes: {}'.format(attributes_set))
     logger.debug('Will remove attributes: {}'.format(attributes_unset))
 
-    attributes['$set'] = attributes_set
+    if attributes_set:
+        attributes['$set'] = attributes_set
     if attributes_unset:
         attributes['$unset'] = attributes_unset
 
