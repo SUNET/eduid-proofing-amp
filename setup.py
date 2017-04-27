@@ -7,13 +7,13 @@ here = os.path.abspath(os.path.dirname(__file__))
 README = open(os.path.join(here, 'README.md')).read()
 CHANGES = open(os.path.join(here, 'CHANGES.md')).read()
 
-version = '0.0.1b0'
+version = '0.1.0b0'
 
 install_requires = [
         # CI fails to build unless a version (same as in eduid_am) is required here :(
         'pymongo >= 2.8,<3',
-        'eduid_am >= 0.6.0,<0.7.0',
-        'eduid_userdb >= 0.2.4b0',
+        'eduid_am >= 0.6.0, < 0.7.0',
+        'eduid_userdb >= 0.2.6b2',
 ]
 
 tests_require = [
@@ -31,7 +31,7 @@ setup(name='eduid-proofing-amp',
           'License :: OSI Approved :: BSD License',
       ],
       keywords='',
-      author='NORDUnet A/S',
+      author='SUNET',
       url='https://github.com/SUNET/eduid-proofing-amp',
       license='BSD',
       packages=find_packages(),
