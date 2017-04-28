@@ -1,4 +1,5 @@
-from eduid_userdb.exceptions import UserDoesNotExist
+from datetime import datetime
+from eduid_userdb.util import UTC
 from eduid_userdb.proofing import OidcProofingUserDB, LetterProofingUserDB
 from celery.utils.log import get_task_logger
 
@@ -34,13 +35,17 @@ class OidcProofingAMPContext(object):
     Private data for this AM plugin.
     """
 
-    def __init__(self, db_uri):
+    def __init__(self, db_uri, new_user_date):
         self.userdb = OidcProofingUserDB(db_uri)
+        self.new_user_date = datetime.strptime(new_user_date, '%Y-%m-%d').replace(tzinfo=UTC())
         self.WHITELIST_SET_ATTRS = (
             # TODO: Arrays must use put or pop, not set, but need more deep refacts
-            'norEduPersonNIN',
+            'norEduPersonNIN',  # Old format
+            'nins'  # New format
         )
-        self.WHITELIST_UNSET_ATTRS = ()
+        self.WHITELIST_UNSET_ATTRS = (
+            'norEduPersonNIN'
+        )
 
 
 class LetterProofingAMPContext(object):
@@ -48,14 +53,20 @@ class LetterProofingAMPContext(object):
     Private data for this AM plugin.
     """
 
-    def __init__(self, db_uri):
+    def __init__(self, db_uri, new_user_date):
         self.userdb = LetterProofingUserDB(db_uri)
+        self.new_user_date = datetime.strptime(new_user_date, '%Y-%m-%d').replace(tzinfo=UTC())
         self.WHITELIST_SET_ATTRS = (
             # TODO: Arrays must use put or pop, not set, but need more deep refacts
-            'norEduPersonNIN',
+            'norEduPersonNIN',  # Old format
+            'nins',  # New format
             'letter_proofing_data',
         )
-        self.WHITELIST_UNSET_ATTRS = ()
+        self.WHITELIST_UNSET_ATTRS = (
+            'norEduPersonNIN',
+        )
+
+# TODO: PhoneProofingAMPContex and MailAliasesProofingAMPContext
 
 
 def oidc_plugin_init(am_conf):
@@ -71,7 +82,7 @@ def oidc_plugin_init(am_conf):
 
     :rtype: OidcProofingAMPContext
     """
-    return OidcProofingAMPContext(am_conf['MONGO_URI'])
+    return OidcProofingAMPContext(am_conf['MONGO_URI'], am_conf['NEW_USER_DATE'])
 
 
 def letter_plugin_init(am_conf):
@@ -87,7 +98,7 @@ def letter_plugin_init(am_conf):
 
     :rtype: LetterProofingAMPContext
     """
-    return LetterProofingAMPContext(am_conf['MONGO_URI'])
+    return LetterProofingAMPContext(am_conf['MONGO_URI'], am_conf['NEW_USER_DATE'])
 
 
 def attribute_fetcher(context, user_id):
@@ -110,7 +121,18 @@ def attribute_fetcher(context, user_id):
     logger.debug('Trying to get user with _id: {} from {}.'.format(user_id, context.userdb))
     user = context.userdb.get_user_by_id(user_id)
     logger.debug('User: {} found.'.format(user))
-    user_dict = user.to_dict(old_userdb_format=True)
+
+    old_userdb_format = True
+    # Save users created after or on new_user_date in the new format
+    primary_mail_ts = user.mail_addresses.primary.created_ts
+    if primary_mail_ts and primary_mail_ts >= context.new_user_date:
+        old_userdb_format = False
+    # Always use new users for the following tests users
+    # ft:staging, ft:prod, lundberg:staging, lundberg:prod, john:staging, john:prod
+    elif user.eppn in ['vofaz-tajod', 'takaj-sosup', 'tovuk-zizih', 'rubom-lujov', 'faraf-livok', 'hofij-zanok']:
+        old_userdb_format = False
+
+    user_dict = user.to_dict(old_userdb_format)  # Do not try to save new format for other users
 
     # white list of valid attributes for security reasons
     attributes_set = {}
