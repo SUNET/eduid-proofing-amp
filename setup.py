@@ -7,7 +7,7 @@ here = os.path.abspath(os.path.dirname(__file__))
 README = open(os.path.join(here, 'README.md')).read()
 CHANGES = open(os.path.join(here, 'CHANGES.md')).read()
 
-version = '0.1.0b0'
+version = '0.1.0'
 
 install_requires = [
         # CI fails to build unless a version (same as in eduid_am) is required here :(
