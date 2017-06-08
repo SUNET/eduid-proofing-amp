@@ -35,9 +35,8 @@ class OidcProofingAMPContext(object):
     Private data for this AM plugin.
     """
 
-    def __init__(self, db_uri, new_user_date):
+    def __init__(self, db_uri):
         self.userdb = OidcProofingUserDB(db_uri)
-        self.new_user_date = datetime.strptime(new_user_date, '%Y-%m-%d').replace(tzinfo=UTC())
         self.WHITELIST_SET_ATTRS = (
             # TODO: Arrays must use put or pop, not set, but need more deep refacts
             'norEduPersonNIN',  # Old format
@@ -53,9 +52,8 @@ class LetterProofingAMPContext(object):
     Private data for this AM plugin.
     """
 
-    def __init__(self, db_uri, new_user_date):
+    def __init__(self, db_uri):
         self.userdb = LetterProofingUserDB(db_uri)
-        self.new_user_date = datetime.strptime(new_user_date, '%Y-%m-%d').replace(tzinfo=UTC())
         self.WHITELIST_SET_ATTRS = (
             # TODO: Arrays must use put or pop, not set, but need more deep refacts
             'norEduPersonNIN',  # Old format
@@ -82,7 +80,7 @@ def oidc_plugin_init(am_conf):
 
     :rtype: OidcProofingAMPContext
     """
-    return OidcProofingAMPContext(am_conf['MONGO_URI'], am_conf['NEW_USER_DATE'])
+    return OidcProofingAMPContext(am_conf['MONGO_URI'])
 
 
 def letter_plugin_init(am_conf):
@@ -98,7 +96,7 @@ def letter_plugin_init(am_conf):
 
     :rtype: LetterProofingAMPContext
     """
-    return LetterProofingAMPContext(am_conf['MONGO_URI'], am_conf['NEW_USER_DATE'])
+    return LetterProofingAMPContext(am_conf['MONGO_URI'])
 
 
 def attribute_fetcher(context, user_id):
