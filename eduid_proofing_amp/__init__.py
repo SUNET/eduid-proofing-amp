@@ -1,6 +1,7 @@
 from datetime import datetime
 from eduid_userdb.util import UTC
 from eduid_userdb.proofing import OidcProofingUserDB, LetterProofingUserDB
+from eduid_userdb.proofing import EmailProofingUserDB, PhoneProofingUserDB
 from celery.utils.log import get_task_logger
 
 logger = get_task_logger(__name__)
@@ -24,7 +25,7 @@ def filter_nin(value):
     """
     result = []
     for item in value:
-        verified = item.get('verfied', False)
+        verified = item.get('verified', False)
         if verified and type(verified) == bool:  # Be sure that it's not something else that evaluates as True in Python
             result.append(item['nin'])
     return result
@@ -64,7 +65,38 @@ class LetterProofingAMPContext(object):
             'norEduPersonNIN',
         )
 
-# TODO: PhoneProofingAMPContex and MailAliasesProofingAMPContext
+
+class EmailProofingAMPContext(object):
+    """
+    Private data for this AM plugin.
+    """
+
+    def __init__(self, db_uri):
+        self.userdb = EmailProofingUserDB(db_uri)
+        self.WHITELIST_SET_ATTRS = (
+            # TODO: Arrays must use put or pop, not set, but need more deep refacts
+            'mailAliases',
+        )
+        self.WHITELIST_UNSET_ATTRS = (
+            'mailAliases',
+        )
+
+
+class PhoneProofingAMPContext(object):
+    """
+    Private data for this AM plugin.
+    """
+
+    def __init__(self, db_uri):
+        self.userdb = PhoneProofingUserDB(db_uri)
+        self.WHITELIST_SET_ATTRS = (
+            # TODO: Arrays must use put or pop, not set, but need more deep refacts
+            'phone',
+        )
+        self.WHITELIST_UNSET_ATTRS = (
+            'phone',
+        )
+
 
 
 def oidc_plugin_init(am_conf):
@@ -97,6 +129,38 @@ def letter_plugin_init(am_conf):
     :rtype: LetterProofingAMPContext
     """
     return LetterProofingAMPContext(am_conf['MONGO_URI'])
+
+
+def emails_plugin_init(am_conf):
+    """
+    Create a private context for this plugin.
+
+    Whatever is returned by this function will get passed to attribute_fetcher() as
+    the `context' argument.
+
+    :am_conf: Attribute Manager configuration data.
+
+    :type am_conf: dict
+
+    :rtype: EmailProofingAMPContext
+    """
+    return EmailProofingAMPContext(am_conf['MONGO_URI'])
+
+
+def phones_plugin_init(am_conf):
+    """
+    Create a private context for this plugin.
+
+    Whatever is returned by this function will get passed to attribute_fetcher() as
+    the `context' argument.
+
+    :am_conf: Attribute Manager configuration data.
+
+    :type am_conf: dict
+
+    :rtype: PhoneProofingAMPContext
+    """
+    return PhoneProofingAMPContext(am_conf['MONGO_URI'])
 
 
 def attribute_fetcher(context, user_id):
