@@ -91,10 +91,10 @@ class PhoneProofingAMPContext(object):
         self.userdb = PhoneProofingUserDB(db_uri)
         self.WHITELIST_SET_ATTRS = (
             # TODO: Arrays must use put or pop, not set, but need more deep refacts
-            'mobile',
+            'phone',
         )
         self.WHITELIST_UNSET_ATTRS = (
-            'mobile',
+            'phone',
         )
 
 
