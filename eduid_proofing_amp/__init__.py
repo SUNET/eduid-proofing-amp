@@ -75,12 +75,9 @@ class EmailProofingAMPContext(object):
         self.userdb = EmailProofingUserDB(db_uri)
         self.WHITELIST_SET_ATTRS = (
             # TODO: Arrays must use put or pop, not set, but need more deep refacts
-            'mail',  # Old format
-            'mailAliases',  # Old format
-            'mail_addresses',
+            'mailAliases',
         )
         self.WHITELIST_UNSET_ATTRS = (
-            'mail',
             'mailAliases',
         )
 
@@ -94,8 +91,7 @@ class PhoneProofingAMPContext(object):
         self.userdb = PhoneProofingUserDB(db_uri)
         self.WHITELIST_SET_ATTRS = (
             # TODO: Arrays must use put or pop, not set, but need more deep refacts
-            'mobile',  # Old format
-            'phone_numbers',
+            'mobile',
         )
         self.WHITELIST_UNSET_ATTRS = (
             'mobile',
