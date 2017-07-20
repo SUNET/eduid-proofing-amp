@@ -63,6 +63,8 @@ class LetterProofingAMPContext(object):
         )
         self.WHITELIST_UNSET_ATTRS = (
             'norEduPersonNIN',
+            'nins',
+            'letter_proofing_data',
         )
 
 
@@ -192,8 +194,10 @@ def attribute_fetcher(context, user_id):
     for attr in context.WHITELIST_SET_ATTRS:
         value = value_filter(attr, user_dict.get(attr, None))
         if value:
+            logger.debug('valueeeeee  ' + str(value))
             attributes_set[attr] = value
         elif attr in context.WHITELIST_UNSET_ATTRS:
+            logger.debug('attr en unset {} value {}'.format(str(attr), str(value)))
             attributes_unset[attr] = value
 
     logger.debug('Will set attributes: {}'.format(attributes_set))
