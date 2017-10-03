@@ -107,7 +107,6 @@ class SecurityProofingAMPContext(object):
     def __init__(self, db_uri):
         self.userdb = SecurityProofingUserDB(db_uri)
         self.WHITELIST_SET_ATTRS = (
-            # TODO: Arrays must use put or pop, not set, but need more deep refacts
             'passwords',
             'credentials',
             'terminated',
@@ -194,7 +193,7 @@ def security_plugin_init(am_conf):
 
     :type am_conf: dict
 
-    :rtype: PhoneProofingAMPContext
+    :rtype: SecurityProofingAMPContext
     """
     return SecurityProofingAMPContext(am_conf['MONGO_URI'])
 
