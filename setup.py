@@ -49,11 +49,13 @@ setup(name='eduid-proofing-amp',
       eduid_letter_proofing = eduid_proofing_amp:attribute_fetcher
       email_proofing = eduid_proofing_amp:attribute_fetcher
       phone_proofing = eduid_proofing_amp:attribute_fetcher
+      securiry_proofing = eduid_proofing_amp:attribute_fetcher
 
       [eduid_am.plugin_init]
       eduid_oidc_proofing = eduid_proofing_amp:oidc_plugin_init
       eduid_letter_proofing = eduid_proofing_amp:letter_plugin_init
       email_proofing = eduid_proofing_amp:emails_plugin_init
       phone_proofing = eduid_proofing_amp:phones_plugin_init
+      security_proofing = eduid_proofing_amp:security_plugin_init
       """,
       )

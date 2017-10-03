@@ -2,6 +2,7 @@ from datetime import datetime
 from eduid_userdb.util import UTC
 from eduid_userdb.proofing import OidcProofingUserDB, LetterProofingUserDB
 from eduid_userdb.proofing import EmailProofingUserDB, PhoneProofingUserDB
+from eduid_userdb.proofing import SecurityProofingUserDB
 from celery.utils.log import get_task_logger
 
 logger = get_task_logger(__name__)
@@ -98,6 +99,25 @@ class PhoneProofingAMPContext(object):
         )
 
 
+class SecurityProofingAMPContext(object):
+    """
+    Private data for this AM plugin.
+    """
+
+    def __init__(self, db_uri):
+        self.userdb = SecurityProofingUserDB(db_uri)
+        self.WHITELIST_SET_ATTRS = (
+            # TODO: Arrays must use put or pop, not set, but need more deep refacts
+            'passwords',
+            'credentials',
+            'terminated',
+        )
+        self.WHITELIST_UNSET_ATTRS = (
+            'passwords',
+            'credentials',
+            'terminated',
+        )
+
 
 def oidc_plugin_init(am_conf):
     """
@@ -161,6 +181,22 @@ def phones_plugin_init(am_conf):
     :rtype: PhoneProofingAMPContext
     """
     return PhoneProofingAMPContext(am_conf['MONGO_URI'])
+
+
+def security_plugin_init(am_conf):
+    """
+    Create a private context for this plugin.
+
+    Whatever is returned by this function will get passed to attribute_fetcher() as
+    the `context' argument.
+
+    :am_conf: Attribute Manager configuration data.
+
+    :type am_conf: dict
+
+    :rtype: PhoneProofingAMPContext
+    """
+    return SecurityProofingAMPContext(am_conf['MONGO_URI'])
 
 
 def attribute_fetcher(context, user_id):
