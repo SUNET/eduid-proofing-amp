@@ -7,7 +7,7 @@ here = os.path.abspath(os.path.dirname(__file__))
 README = open(os.path.join(here, 'README.md')).read()
 CHANGES = open(os.path.join(here, 'CHANGES.md')).read()
 
-version = '0.1.0'
+version = '0.1.1b0'
 
 install_requires = [
         # CI fails to build unless a version (same as in eduid_am) is required here :(
@@ -47,13 +47,19 @@ setup(name='eduid-proofing-amp',
       [eduid_am.attribute_fetcher]
       eduid_oidc_proofing = eduid_proofing_amp:attribute_fetcher
       eduid_letter_proofing = eduid_proofing_amp:attribute_fetcher
-      email_proofing = eduid_proofing_amp:attribute_fetcher
-      phone_proofing = eduid_proofing_amp:attribute_fetcher
+      eduid_lookup_mobile_proofing = eduid_proofing_amp:attribute_fetcher
+      eduid_email = eduid_proofing_amp:attribute_fetcher
+      eduid_phone = eduid_proofing_amp:attribute_fetcher
+      eduid_personal_data = eduid_proofing_amp:attribute_fetcher
+      eduid_security = eduid_proofing_amp:attribute_fetcher
 
       [eduid_am.plugin_init]
       eduid_oidc_proofing = eduid_proofing_amp:oidc_plugin_init
       eduid_letter_proofing = eduid_proofing_amp:letter_plugin_init
-      email_proofing = eduid_proofing_amp:emails_plugin_init
-      phone_proofing = eduid_proofing_amp:phones_plugin_init
+      eduid_lookup_mobile_proofing = eduid_proofing_amp:lookup_mobile_plugin_init
+      eduid_email = eduid_proofing_amp:email_plugin_init
+      eduid_phone = eduid_proofing_amp:phone_plugin_init
+      eduid_personal_data = eduid_proofing_amp:eduid_personal_data_plugin_init
+      eduid_security = eduid_proofing_amp:eduid_security_plugin_init
       """,
       )
