@@ -42,11 +42,11 @@ class OidcProofingAMPContext(object):
         self.userdb = OidcProofingUserDB(db_uri)
         self.WHITELIST_SET_ATTRS = (
             # TODO: Arrays must use put or pop, not set, but need more deep refacts
-            'norEduPersonNIN',  # Old format
             'nins'  # New format
         )
         self.WHITELIST_UNSET_ATTRS = (
-            'norEduPersonNIN'
+            'norEduPersonNIN',
+            'nins'  # New format
         )
 
 
@@ -59,12 +59,12 @@ class LetterProofingAMPContext(object):
         self.userdb = LetterProofingUserDB(db_uri)
         self.WHITELIST_SET_ATTRS = (
             # TODO: Arrays must use put or pop, not set, but need more deep refacts
-            'norEduPersonNIN',  # Old format
             'nins',  # New format
             'letter_proofing_data',
         )
         self.WHITELIST_UNSET_ATTRS = (
             'norEduPersonNIN',
+            'nins'  # New format
         )
 
 
@@ -77,11 +77,11 @@ class LookupMobileProofingAMPContext(object):
         self.userdb = LookupMobileProofingUserDB(db_uri)
         self.WHITELIST_SET_ATTRS = (
             # TODO: Arrays must use put or pop, not set, but need more deep refacts
-            'norEduPersonNIN',  # Old format
             'nins',  # New format
         )
         self.WHITELIST_UNSET_ATTRS = (
             'norEduPersonNIN',
+            'nins'  # New format
         )
 
 
