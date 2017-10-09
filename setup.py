@@ -59,7 +59,7 @@ setup(name='eduid-proofing-amp',
       eduid_lookup_mobile_proofing = eduid_proofing_amp:lookup_mobile_plugin_init
       eduid_email = eduid_proofing_amp:email_plugin_init
       eduid_phone = eduid_proofing_amp:phone_plugin_init
-      eduid_personal_data = eduid_proofing_amp:eduid_personal_data_plugin_init
-      eduid_security = eduid_proofing_amp:eduid_security_plugin_init
+      eduid_personal_data = eduid_proofing_amp:personal_data_plugin_init
+      eduid_security = eduid_proofing_amp:security_plugin_init
       """,
       )
