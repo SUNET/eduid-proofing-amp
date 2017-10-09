@@ -39,15 +39,15 @@ class OidcProofingAMPContext(object):
     """
 
     def __init__(self, db_uri):
-        self.userdb = OidcProofingUserDB(db_uri)
-        self.WHITELIST_SET_ATTRS = (
+        self.private_db = OidcProofingUserDB(db_uri)
+        self.WHITELIST_SET_ATTRS = [
             # TODO: Arrays must use put or pop, not set, but need more deep refacts
-            'nins'  # New format
-        )
-        self.WHITELIST_UNSET_ATTRS = (
+            'nins',  # New format
+        ]
+        self.WHITELIST_UNSET_ATTRS = [
             'norEduPersonNIN',
             'nins'  # New format
-        )
+        ]
 
 
 class LetterProofingAMPContext(object):
@@ -56,16 +56,16 @@ class LetterProofingAMPContext(object):
     """
 
     def __init__(self, db_uri):
-        self.userdb = LetterProofingUserDB(db_uri)
-        self.WHITELIST_SET_ATTRS = (
+        self.private_db = LetterProofingUserDB(db_uri)
+        self.WHITELIST_SET_ATTRS = [
             # TODO: Arrays must use put or pop, not set, but need more deep refacts
             'nins',  # New format
             'letter_proofing_data',
-        )
-        self.WHITELIST_UNSET_ATTRS = (
+        ]
+        self.WHITELIST_UNSET_ATTRS = [
             'norEduPersonNIN',
             'nins'  # New format
-        )
+        ]
 
 
 class LookupMobileProofingAMPContext(object):
@@ -74,15 +74,15 @@ class LookupMobileProofingAMPContext(object):
     """
 
     def __init__(self, db_uri):
-        self.userdb = LookupMobileProofingUserDB(db_uri)
-        self.WHITELIST_SET_ATTRS = (
+        self.private_db = LookupMobileProofingUserDB(db_uri)
+        self.WHITELIST_SET_ATTRS = [
             # TODO: Arrays must use put or pop, not set, but need more deep refacts
             'nins',  # New format
-        )
-        self.WHITELIST_UNSET_ATTRS = (
+        ]
+        self.WHITELIST_UNSET_ATTRS = [
             'norEduPersonNIN',
             'nins'  # New format
-        )
+        ]
 
 
 class EmailProofingAMPContext(object):
@@ -91,14 +91,14 @@ class EmailProofingAMPContext(object):
     """
 
     def __init__(self, db_uri):
-        self.userdb = EmailProofingUserDB(db_uri)
-        self.WHITELIST_SET_ATTRS = (
+        self.private_db = EmailProofingUserDB(db_uri)
+        self.WHITELIST_SET_ATTRS = [
             # TODO: Arrays must use put or pop, not set, but need more deep refacts
             'mailAliases',
-        )
-        self.WHITELIST_UNSET_ATTRS = (
+        ]
+        self.WHITELIST_UNSET_ATTRS = [
             'mailAliases',
-        )
+        ]
 
 
 class PhoneProofingAMPContext(object):
@@ -107,14 +107,14 @@ class PhoneProofingAMPContext(object):
     """
 
     def __init__(self, db_uri):
-        self.userdb = PhoneProofingUserDB(db_uri)
-        self.WHITELIST_SET_ATTRS = (
+        self.private_db = PhoneProofingUserDB(db_uri)
+        self.WHITELIST_SET_ATTRS = [
             # TODO: Arrays must use put or pop, not set, but need more deep refacts
             'phone',
-        )
-        self.WHITELIST_UNSET_ATTRS = (
+        ]
+        self.WHITELIST_UNSET_ATTRS = [
             'phone',
-        )
+        ]
 
 
 class PersonalDataAMPContext(object):
@@ -123,16 +123,16 @@ class PersonalDataAMPContext(object):
     """
 
     def __init__(self, db_uri):
-        self.userdb = PersonalDataUserDB(db_uri)
-        self.WHITELIST_SET_ATTRS = (
+        self.private_db = PersonalDataUserDB(db_uri)
+        self.WHITELIST_SET_ATTRS = [
             'givenName',
             'surname',  # New format
             'displayName',
             'preferredLanguage',
-        )
-        self.WHITELIST_UNSET_ATTRS = (
+        ]
+        self.WHITELIST_UNSET_ATTRS = [
             'sn',  # Old format
-        )
+        ]
 
 
 class SecurityAMPContext(object):
@@ -141,15 +141,15 @@ class SecurityAMPContext(object):
     """
 
     def __init__(self, db_uri):
-        self.userdb = SecurityUserDB(db_uri)
-        self.WHITELIST_SET_ATTRS = (
+        self.private_db = SecurityUserDB(db_uri)
+        self.WHITELIST_SET_ATTRS = [
             'passwords',
             'terminated',
-        )
-        self.WHITELIST_UNSET_ATTRS = (
+        ]
+        self.WHITELIST_UNSET_ATTRS = [
             'passwords',
             'terminated',
-        )
+        ]
 
 
 def oidc_plugin_init(am_conf):
@@ -266,7 +266,7 @@ def security_plugin_init(am_conf):
 
 def attribute_fetcher(context, user_id):
     """
-    Read a user from the Dashboard private userdb and return an update
+    Read a user from the Dashboard private private_db and return an update
     dict to let the Attribute Manager update the use in the central
     eduid user database.
 
@@ -281,8 +281,8 @@ def attribute_fetcher(context, user_id):
     """
 
     attributes = {}
-    logger.debug('Trying to get user with _id: {} from {}.'.format(user_id, context.userdb))
-    user = context.userdb.get_user_by_id(user_id)
+    logger.debug('Trying to get user with _id: {} from {}.'.format(user_id, context.private_db))
+    user = context.private_db.get_user_by_id(user_id)
     logger.debug('User: {} found.'.format(user))
 
     user_dict = user.to_dict(old_userdb_format=False)
