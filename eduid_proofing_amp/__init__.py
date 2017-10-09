@@ -1,7 +1,9 @@
-from datetime import datetime
-from eduid_userdb.util import UTC
-from eduid_userdb.proofing import OidcProofingUserDB, LetterProofingUserDB
+from __future__ import absolute_import
+
+from eduid_userdb.proofing import OidcProofingUserDB, LetterProofingUserDB, LookupMobileProofingUserDB
 from eduid_userdb.proofing import EmailProofingUserDB, PhoneProofingUserDB
+from eduid_userdb.personal_data import PersonalDataUserDB
+from eduid_userdb.security import SecurityUserDB
 from celery.utils.log import get_task_logger
 
 logger = get_task_logger(__name__)
@@ -37,15 +39,15 @@ class OidcProofingAMPContext(object):
     """
 
     def __init__(self, db_uri):
-        self.userdb = OidcProofingUserDB(db_uri)
-        self.WHITELIST_SET_ATTRS = (
+        self.private_db = OidcProofingUserDB(db_uri)
+        self.WHITELIST_SET_ATTRS = [
             # TODO: Arrays must use put or pop, not set, but need more deep refacts
-            'norEduPersonNIN',  # Old format
+            'nins',  # New format
+        ]
+        self.WHITELIST_UNSET_ATTRS = [
+            'norEduPersonNIN',
             'nins'  # New format
-        )
-        self.WHITELIST_UNSET_ATTRS = (
-            'norEduPersonNIN'
-        )
+        ]
 
 
 class LetterProofingAMPContext(object):
@@ -54,16 +56,33 @@ class LetterProofingAMPContext(object):
     """
 
     def __init__(self, db_uri):
-        self.userdb = LetterProofingUserDB(db_uri)
-        self.WHITELIST_SET_ATTRS = (
+        self.private_db = LetterProofingUserDB(db_uri)
+        self.WHITELIST_SET_ATTRS = [
             # TODO: Arrays must use put or pop, not set, but need more deep refacts
-            'norEduPersonNIN',  # Old format
             'nins',  # New format
             'letter_proofing_data',
-        )
-        self.WHITELIST_UNSET_ATTRS = (
+        ]
+        self.WHITELIST_UNSET_ATTRS = [
             'norEduPersonNIN',
-        )
+            'nins'  # New format
+        ]
+
+
+class LookupMobileProofingAMPContext(object):
+    """
+    Private data for this AM plugin.
+    """
+
+    def __init__(self, db_uri):
+        self.private_db = LookupMobileProofingUserDB(db_uri)
+        self.WHITELIST_SET_ATTRS = [
+            # TODO: Arrays must use put or pop, not set, but need more deep refacts
+            'nins',  # New format
+        ]
+        self.WHITELIST_UNSET_ATTRS = [
+            'norEduPersonNIN',
+            'nins'  # New format
+        ]
 
 
 class EmailProofingAMPContext(object):
@@ -72,14 +91,14 @@ class EmailProofingAMPContext(object):
     """
 
     def __init__(self, db_uri):
-        self.userdb = EmailProofingUserDB(db_uri)
-        self.WHITELIST_SET_ATTRS = (
+        self.private_db = EmailProofingUserDB(db_uri)
+        self.WHITELIST_SET_ATTRS = [
             # TODO: Arrays must use put or pop, not set, but need more deep refacts
             'mailAliases',
-        )
-        self.WHITELIST_UNSET_ATTRS = (
+        ]
+        self.WHITELIST_UNSET_ATTRS = [
             'mailAliases',
-        )
+        ]
 
 
 class PhoneProofingAMPContext(object):
@@ -88,15 +107,49 @@ class PhoneProofingAMPContext(object):
     """
 
     def __init__(self, db_uri):
-        self.userdb = PhoneProofingUserDB(db_uri)
-        self.WHITELIST_SET_ATTRS = (
+        self.private_db = PhoneProofingUserDB(db_uri)
+        self.WHITELIST_SET_ATTRS = [
             # TODO: Arrays must use put or pop, not set, but need more deep refacts
             'phone',
-        )
-        self.WHITELIST_UNSET_ATTRS = (
+        ]
+        self.WHITELIST_UNSET_ATTRS = [
             'phone',
-        )
+        ]
 
+
+class PersonalDataAMPContext(object):
+    """
+    Private data for this AM plugin.
+    """
+
+    def __init__(self, db_uri):
+        self.private_db = PersonalDataUserDB(db_uri)
+        self.WHITELIST_SET_ATTRS = [
+            'givenName',
+            'surname',  # New format
+            'displayName',
+            'preferredLanguage',
+        ]
+        self.WHITELIST_UNSET_ATTRS = [
+            'sn',  # Old format
+        ]
+
+
+class SecurityAMPContext(object):
+    """
+    Private data for this AM plugin.
+    """
+
+    def __init__(self, db_uri):
+        self.private_db = SecurityUserDB(db_uri)
+        self.WHITELIST_SET_ATTRS = [
+            'passwords',
+            'terminated',
+        ]
+        self.WHITELIST_UNSET_ATTRS = [
+            'passwords',
+            'terminated',
+        ]
 
 
 def oidc_plugin_init(am_conf):
@@ -131,7 +184,23 @@ def letter_plugin_init(am_conf):
     return LetterProofingAMPContext(am_conf['MONGO_URI'])
 
 
-def emails_plugin_init(am_conf):
+def lookup_mobile_plugin_init(am_conf):
+    """
+    Create a private context for this plugin.
+
+    Whatever is returned by this function will get passed to attribute_fetcher() as
+    the `context' argument.
+
+    :am_conf: Attribute Manager configuration data.
+
+    :type am_conf: dict
+
+    :rtype: LetterProofingAMPContext
+    """
+    return LookupMobileProofingAMPContext(am_conf['MONGO_URI'])
+
+
+def email_plugin_init(am_conf):
     """
     Create a private context for this plugin.
 
@@ -147,7 +216,7 @@ def emails_plugin_init(am_conf):
     return EmailProofingAMPContext(am_conf['MONGO_URI'])
 
 
-def phones_plugin_init(am_conf):
+def phone_plugin_init(am_conf):
     """
     Create a private context for this plugin.
 
@@ -163,9 +232,41 @@ def phones_plugin_init(am_conf):
     return PhoneProofingAMPContext(am_conf['MONGO_URI'])
 
 
+def personal_data_plugin_init(am_conf):
+    """
+    Create a private context for this plugin.
+
+    Whatever is returned by this function will get passed to attribute_fetcher() as
+    the `context' argument.
+
+    :am_conf: Attribute Manager configuration data.
+
+    :type am_conf: dict
+
+    :rtype: PersonalDataAMPContext
+    """
+    return PersonalDataAMPContext(am_conf['MONGO_URI'])
+
+
+def security_plugin_init(am_conf):
+    """
+    Create a private context for this plugin.
+
+    Whatever is returned by this function will get passed to attribute_fetcher() as
+    the `context' argument.
+
+    :am_conf: Attribute Manager configuration data.
+
+    :type am_conf: dict
+
+    :rtype: SecurityAMPContext
+    """
+    return SecurityAMPContext(am_conf['MONGO_URI'])
+
+
 def attribute_fetcher(context, user_id):
     """
-    Read a user from the Dashboard private userdb and return an update
+    Read a user from the Dashboard private private_db and return an update
     dict to let the Attribute Manager update the use in the central
     eduid user database.
 
@@ -180,8 +281,8 @@ def attribute_fetcher(context, user_id):
     """
 
     attributes = {}
-    logger.debug('Trying to get user with _id: {} from {}.'.format(user_id, context.userdb))
-    user = context.userdb.get_user_by_id(user_id)
+    logger.debug('Trying to get user with _id: {} from {}.'.format(user_id, context.private_db))
+    user = context.private_db.get_user_by_id(user_id)
     logger.debug('User: {} found.'.format(user))
 
     user_dict = user.to_dict(old_userdb_format=False)
