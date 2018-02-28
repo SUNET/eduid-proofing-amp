@@ -7,11 +7,9 @@ here = os.path.abspath(os.path.dirname(__file__))
 README = open(os.path.join(here, 'README.md')).read()
 CHANGES = open(os.path.join(here, 'CHANGES.md')).read()
 
-version = '0.1.1b1'
+version = '0.1.1b2'
 
 install_requires = [
-        # CI fails to build unless a version (same as in eduid_am) is required here :(
-        'pymongo >= 2.8,<3',
         'eduid_am >= 0.6.0, < 0.7.0',
         'eduid_userdb >= 0.3.2b3',
 ]
