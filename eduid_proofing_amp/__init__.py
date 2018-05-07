@@ -145,10 +145,15 @@ class SecurityAMPContext(object):
         self.WHITELIST_SET_ATTRS = [
             'passwords',
             'terminated',
+            'nins',             # For AL1 downgrade on password reset
+            'phone',            # For AL1 downgrade on password reset
         ]
         self.WHITELIST_UNSET_ATTRS = [
             'passwords',
             'terminated',
+            'norEduPersonNIN',  # For AL1 downgrade on password reset
+            'nins',             # For AL1 downgrade on password reset
+            'phone',            # For AL1 downgrade on password reset
         ]
 
 

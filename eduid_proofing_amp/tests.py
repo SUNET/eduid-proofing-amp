@@ -811,6 +811,16 @@ class AttributeFetcherSecurityTests(MongoTestCase):
                             'credential_id': u'112345678901234567890123',
                             'salt': '$NDNv1H1$9c810d852430b62a9a7c6159d5d64c41c3831846f81b6799b54e1e8922f11545$32$32$',
                         }],
+                        'nins': [{
+                            'number': '123456781235',
+                            'primary': True,
+                            'verified': True
+                        }],
+                        'phone': [{
+                            'number': '+46700011336',
+                            'primary': True,
+                            'verified': True
+                        }]
                     },
                     '$unset': {
                         'terminated': None
@@ -843,6 +853,16 @@ class AttributeFetcherSecurityTests(MongoTestCase):
                             'credential_id': u'112345678901234567890123',
                             'salt': '$NDNv1H1$9c810d852430b62a9a7c6159d5d64c41c3831846f81b6799b54e1e8922f11545$32$32$',
                         }],
+                        'nins': [{
+                            'number': '123456781235',
+                            'primary': True,
+                            'verified': True
+                        }],
+                        'phone': [{
+                            'number': '+46700011336',
+                            'primary': True,
+                            'verified': True
+                        }]
                     },
                     '$unset': {
                         'terminated': None
