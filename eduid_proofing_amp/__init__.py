@@ -1,7 +1,7 @@
 from __future__ import absolute_import
 
 from eduid_userdb.proofing import OidcProofingUserDB, LetterProofingUserDB, LookupMobileProofingUserDB
-from eduid_userdb.proofing import EmailProofingUserDB, PhoneProofingUserDB
+from eduid_userdb.proofing import EmailProofingUserDB, PhoneProofingUserDB, OrcidProofingUserDB
 from eduid_userdb.personal_data import PersonalDataUserDB
 from eduid_userdb.security import SecurityUserDB
 from celery.utils.log import get_task_logger
@@ -157,6 +157,21 @@ class SecurityAMPContext(object):
         ]
 
 
+class OrcidAMPContext(object):
+    """
+    Private data for this AM plugin.
+    """
+
+    def __init__(self, db_uri):
+        self.private_db = OrcidProofingUserDB(db_uri)
+        self.WHITELIST_SET_ATTRS = [
+            'orcid',
+        ]
+        self.WHITELIST_UNSET_ATTRS = [
+            'orcid',
+        ]
+
+
 def oidc_plugin_init(am_conf):
     """
     Create a private context for this plugin.
@@ -267,6 +282,22 @@ def security_plugin_init(am_conf):
     :rtype: SecurityAMPContext
     """
     return SecurityAMPContext(am_conf['MONGO_URI'])
+
+
+def orcid_plugin_init(am_conf):
+    """
+    Create a private context for this plugin.
+
+    Whatever is returned by this function will get passed to attribute_fetcher() as
+    the `context' argument.
+
+    :am_conf: Attribute Manager configuration data.
+
+    :type am_conf: dict
+
+    :rtype: OrcidAMPContext
+    """
+    return OrcidAMPContext(am_conf['MONGO_URI'])
 
 
 def attribute_fetcher(context, user_id):
