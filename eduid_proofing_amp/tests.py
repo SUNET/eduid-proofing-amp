@@ -10,6 +10,7 @@ from eduid_userdb.personal_data import PersonalDataUser
 from eduid_userdb.security import SecurityUser
 from eduid_proofing_amp import attribute_fetcher, oidc_plugin_init, letter_plugin_init, lookup_mobile_plugin_init
 from eduid_proofing_amp import email_plugin_init, phone_plugin_init, personal_data_plugin_init, security_plugin_init
+from eduid_proofing_amp import orcid_plugin_init
 from eduid_am.celery import celery, get_attribute_manager
 
 USER_DATA = {
@@ -34,6 +35,30 @@ USER_DATA = {
     'nins': [
         {'number': '123456781235', 'primary': True, 'verified': True}
     ],
+    'orcid': {
+        'oidc_authz': {
+            'token_type': 'bearer',
+            'refresh_token': 'a_refresh_token',
+            'access_token': 'an_access_token',
+            'id_token': {
+                    'nonce': 'a_nonce',
+                    'sub': 'sub_id',
+                    'iss': 'https://issuer.example.org',
+                    'created_by' : 'orcid',
+                    'exp': 1526890816,
+                    'auth_time' : 1526890214,
+                    'iat': 1526890216,
+                    'aud': [
+                            'APP-YIAD0N1L4B3Z3W9Q'
+                    ]
+            },
+            'expires_in': 631138518,
+            'created_by': 'orcid'
+        },
+        'verified': True,
+        'id': 'orcid_unique_id',
+        'created_by': 'orcid'
+    }
 }
 
 
@@ -293,7 +318,6 @@ class AttributeFetcherOldToNewUsersTests(MongoTestCase):
                 actual_update,
                 expected_update
             )
-
 
 
 class AttributeFetcherNINProofingTests(MongoTestCase):
@@ -866,6 +890,96 @@ class AttributeFetcherSecurityTests(MongoTestCase):
                     },
                     '$unset': {
                         'terminated': None
+                    }
+                }
+            )
+
+
+class AttributeFetcherOrcidTests(MongoTestCase):
+
+    def setUp(self):
+        super(AttributeFetcherOrcidTests, self).setUp(celery, get_attribute_manager)
+        self.user_data = deepcopy(USER_DATA)
+        self.plugin_contexts = [
+            orcid_plugin_init(celery.conf),
+        ]
+        #for userdoc in self.amdb._get_all_docs():
+        #    security_user = SecurityUser(data=userdoc)
+        #    for context in self.plugin_contexts:
+        #        context.private_db.save(security_user, check_sync=False)
+
+        self.maxDiff = None
+
+    def tearDown(self):
+        for context in self.plugin_contexts:
+            context.private_db._drop_whole_collection()
+        super(AttributeFetcherOrcidTests, self).tearDown()
+
+    def test_invalid_user(self):
+        for context in self.plugin_contexts:
+            with self.assertRaises(UserDoesNotExist):
+                attribute_fetcher(context, bson.ObjectId('0' * 24))
+
+    def test_existing_user(self):
+        for context in self.plugin_contexts:
+            proofing_user = ProofingUser(data=self.user_data)
+            context.private_db.save(proofing_user)
+
+            self.assertDictEqual(
+                attribute_fetcher(context, proofing_user.user_id),
+                {
+                    '$set': {
+                        'orcid': {
+                            'oidc_authz': {
+                                'token_type': 'bearer',
+                                'refresh_token': 'a_refresh_token',
+                                'access_token': 'an_access_token',
+                                'id_token': {
+                                        'nonce': 'a_nonce',
+                                        'sub': 'sub_id',
+                                        'iss': 'https://issuer.example.org',
+                                        'created_by' : 'orcid',
+                                        'exp': 1526890816,
+                                        'auth_time' : 1526890214,
+                                        'iat': 1526890216,
+                                        'aud': [
+                                                'APP-YIAD0N1L4B3Z3W9Q'
+                                        ]
+                                },
+                                'expires_in': 631138518,
+                                'created_by': 'orcid'
+                            },
+                            'verified': True,
+                            'id': 'orcid_unique_id',
+                            'created_by': 'orcid'
+                        }
+                    },
+                }
+            )
+
+    def test_malicious_attributes(self):
+        self.user_data.update({
+            'malicious': 'hacker',
+        })
+
+        for context in self.plugin_contexts:
+            # Write bad entry into database
+            user_id = context.private_db._coll.insert(self.user_data)
+
+            with self.assertRaises(UserHasUnknownData):
+                attribute_fetcher(context, user_id)
+
+    def test_remove_orcid(self):
+        for context in self.plugin_contexts:
+            proofing_user = ProofingUser(data=self.user_data)
+            proofing_user.orcid = None
+            context.private_db.save(proofing_user)
+
+            self.assertDictEqual(
+                attribute_fetcher(context, proofing_user.user_id),
+                {
+                    '$unset': {
+                        'orcid': None
                     }
                 }
             )
