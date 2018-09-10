@@ -55,8 +55,11 @@ USER_DATA = {
             'expires_in': 631138518,
             'created_by': 'orcid'
         },
-        'verified': True,
+        'given_name': 'Testaren',
+        'family_name': 'Testsson',
+        'name': None,
         'id': 'orcid_unique_id',
+        'verified': True,
         'created_by': 'orcid'
     }
 }
@@ -903,10 +906,6 @@ class AttributeFetcherOrcidTests(MongoTestCase):
         self.plugin_contexts = [
             orcid_plugin_init(celery.conf),
         ]
-        #for userdoc in self.amdb._get_all_docs():
-        #    security_user = SecurityUser(data=userdoc)
-        #    for context in self.plugin_contexts:
-        #        context.private_db.save(security_user, check_sync=False)
 
         self.maxDiff = None
 
@@ -938,9 +937,9 @@ class AttributeFetcherOrcidTests(MongoTestCase):
                                         'nonce': 'a_nonce',
                                         'sub': 'sub_id',
                                         'iss': 'https://issuer.example.org',
-                                        'created_by' : 'orcid',
+                                        'created_by': 'orcid',
                                         'exp': 1526890816,
-                                        'auth_time' : 1526890214,
+                                        'auth_time': 1526890214,
                                         'iat': 1526890216,
                                         'aud': [
                                                 'APP-YIAD0N1L4B3Z3W9Q'
@@ -949,6 +948,9 @@ class AttributeFetcherOrcidTests(MongoTestCase):
                                 'expires_in': 631138518,
                                 'created_by': 'orcid'
                             },
+                            'given_name': 'Testaren',
+                            'family_name': 'Testsson',
+                            'name': None,
                             'verified': True,
                             'id': 'orcid_unique_id',
                             'created_by': 'orcid'
