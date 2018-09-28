@@ -7,7 +7,7 @@ here = os.path.abspath(os.path.dirname(__file__))
 README = open(os.path.join(here, 'README.md')).read()
 CHANGES = open(os.path.join(here, 'CHANGES.md')).read()
 
-version = '0.1.1b5'
+version = '0.1.1b6'
 
 install_requires = [
         'eduid_am >= 0.6.0, < 0.7.0',
@@ -51,6 +51,7 @@ setup(name='eduid-proofing-amp',
       eduid_personal_data = eduid_proofing_amp:attribute_fetcher
       eduid_security = eduid_proofing_amp:attribute_fetcher
       eduid_orcid = eduid_proofing_amp:attribute_fetcher
+      eduid_eidas = eduid_proofing_amp:attribute_fetcher
 
       [eduid_am.plugin_init]
       eduid_oidc_proofing = eduid_proofing_amp:oidc_plugin_init
@@ -61,5 +62,6 @@ setup(name='eduid-proofing-amp',
       eduid_personal_data = eduid_proofing_amp:personal_data_plugin_init
       eduid_security = eduid_proofing_amp:security_plugin_init
       eduid_orcid = eduid_proofing_amp:orcid_plugin_init
+      eduid_eidas = eduid_proofing_amp:eidas_plugin_init
       """,
       )
