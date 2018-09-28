@@ -2,6 +2,7 @@ from __future__ import absolute_import
 
 from eduid_userdb.proofing import OidcProofingUserDB, LetterProofingUserDB, LookupMobileProofingUserDB
 from eduid_userdb.proofing import EmailProofingUserDB, PhoneProofingUserDB, OrcidProofingUserDB
+from eduid_userdb.proofing import EidasProofingUserDB
 from eduid_userdb.personal_data import PersonalDataUserDB
 from eduid_userdb.security import SecurityUserDB
 from celery.utils.log import get_task_logger
