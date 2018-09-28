@@ -172,6 +172,19 @@ class OrcidAMPContext(object):
         ]
 
 
+class EidasAMPContext(object):
+    """
+    Private data for this AM plugin.
+    """
+
+    def __init__(self, db_uri):
+        self.private_db = EidasProofingUserDB(db_uri)
+        self.WHITELIST_SET_ATTRS = [
+            'passwords',
+        ]
+        self.WHITELIST_UNSET_ATTRS = []
+
+
 def oidc_plugin_init(am_conf):
     """
     Create a private context for this plugin.
@@ -298,6 +311,22 @@ def orcid_plugin_init(am_conf):
     :rtype: OrcidAMPContext
     """
     return OrcidAMPContext(am_conf['MONGO_URI'])
+
+
+def eidas_plugin_init(am_conf):
+    """
+    Create a private context for this plugin.
+
+    Whatever is returned by this function will get passed to attribute_fetcher() as
+    the `context' argument.
+
+    :am_conf: Attribute Manager configuration data.
+
+    :type am_conf: dict
+
+    :rtype: EidasAMPContext
+    """
+    return EidasAMPContext(am_conf['MONGO_URI'])
 
 
 def attribute_fetcher(context, user_id):
