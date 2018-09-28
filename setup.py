@@ -11,7 +11,7 @@ version = '0.1.1b6'
 
 install_requires = [
         'eduid_am >= 0.6.0, < 0.7.0',
-        'eduid_userdb >= 0.4.0b5',
+        'eduid_userdb >= 0.4.0b14',
 ]
 
 tests_require = [
