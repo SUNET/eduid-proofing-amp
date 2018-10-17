@@ -182,6 +182,7 @@ class EidasAMPContext(object):
         self.private_db = EidasProofingUserDB(db_uri)
         self.WHITELIST_SET_ATTRS = [
             'passwords',
+            'nins',
         ]
         self.WHITELIST_UNSET_ATTRS = []
 
