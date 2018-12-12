@@ -44,6 +44,9 @@ class OidcProofingAMPContext(object):
         self.WHITELIST_SET_ATTRS = [
             # TODO: Arrays must use put or pop, not set, but need more deep refacts
             'nins',  # New format
+            'givenName',
+            'surname',  # New format
+            'displayName',
         ]
         self.WHITELIST_UNSET_ATTRS = [
             'norEduPersonNIN',
@@ -62,6 +65,9 @@ class LetterProofingAMPContext(object):
             # TODO: Arrays must use put or pop, not set, but need more deep refacts
             'nins',  # New format
             'letter_proofing_data',
+            'givenName',
+            'surname',  # New format
+            'displayName',
         ]
         self.WHITELIST_UNSET_ATTRS = [
             'norEduPersonNIN',
@@ -79,6 +85,9 @@ class LookupMobileProofingAMPContext(object):
         self.WHITELIST_SET_ATTRS = [
             # TODO: Arrays must use put or pop, not set, but need more deep refacts
             'nins',  # New format
+            'givenName',
+            'surname',  # New format
+            'displayName',
         ]
         self.WHITELIST_UNSET_ATTRS = [
             'norEduPersonNIN',
@@ -185,6 +194,9 @@ class EidasAMPContext(object):
         self.WHITELIST_SET_ATTRS = [
             'passwords',
             'nins',
+            'givenName',
+            'surname',  # New format
+            'displayName',
         ]
         self.WHITELIST_UNSET_ATTRS = []
 
