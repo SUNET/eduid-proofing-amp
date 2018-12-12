@@ -100,6 +100,9 @@ class AttributeFetcherOldToNewUsersTests(MongoTestCase):
             actual_update = attribute_fetcher(context, proofing_user.user_id)
             expected_update = {
                     '$set': {
+                        "givenName": u"Testaren",
+                        "surname": u"Testsson",
+                        "displayName": u"John",
                         'nins': [{'number': '123456781235', 'verified': True, 'primary': True}],
                     },
                 }
@@ -130,6 +133,9 @@ class AttributeFetcherOldToNewUsersTests(MongoTestCase):
             actual_update = attribute_fetcher(context, proofing_user.user_id)
             expected_update = {
                 '$set': {
+                    "givenName": u"Testaren",
+                    "surname": u"Testsson",
+                    "displayName": u"John",
                     'nins': [{'number': '123456781235', 'verified': True, 'primary': True}],
                 },
             }
@@ -174,6 +180,9 @@ class AttributeFetcherOldToNewUsersTests(MongoTestCase):
         actual_update = attribute_fetcher(letter_plugin_context, proofing_user.user_id)
         expected_update = {
             '$set': {
+                "givenName": u"Testaren",
+                "surname": u"Testsson",
+                "displayName": u"John",
                 'nins': [{'number': '123456781235', 'verified': True, 'primary': True}],
                 "letter_proofing_data": [
                     {
@@ -245,6 +254,9 @@ class AttributeFetcherOldToNewUsersTests(MongoTestCase):
         actual_update = attribute_fetcher(letter_plugin_context, proofing_user.user_id)
         expected_update = {
             '$set': {
+                "givenName": u"Testaren",
+                "surname": u"Testsson",
+                "displayName": u"John",
                 'nins': [{'number': '123456781235', 'verified': True, 'primary': True}],
                 "letter_proofing_data": [
                     {
@@ -360,6 +372,9 @@ class AttributeFetcherNINProofingTests(MongoTestCase):
                 attribute_fetcher(context, proofing_user.user_id),
                 {
                     '$set': {
+                        "givenName": u"Testaren",
+                        "surname": u"Testsson",
+                        "displayName": u"John",
                         'nins': [
                             {'number': '123456781235', 'primary': True, 'verified': True}
                         ]
@@ -389,6 +404,9 @@ class AttributeFetcherNINProofingTests(MongoTestCase):
                 attribute_fetcher(context, proofing_user.user_id),
                 {
                     '$set': {
+                        "givenName": u"Testaren",
+                        "surname": u"Testsson",
+                        "displayName": u"John",
                         'nins': [{'number': '123456781235', 'verified': True, 'primary': True}],
                     },
                 }
@@ -429,6 +447,9 @@ class AttributeFetcherNINProofingTests(MongoTestCase):
         actual_update = attribute_fetcher(letter_plugin_context, proofing_user.user_id)
         expected_update = {
                     '$set': {
+                        "givenName": u"Testaren",
+                        "surname": u"Testsson",
+                        "displayName": u"John",
                         'nins': [{'number': '123456781235', 'verified': True, 'primary': True}],
                         "letter_proofing_data": [
                             {
@@ -456,6 +477,7 @@ class AttributeFetcherNINProofingTests(MongoTestCase):
                         ]
                     },
                 }
+
         self.assertDictEqual(
             actual_update,
             expected_update
@@ -500,6 +522,9 @@ class AttributeFetcherNINProofingTests(MongoTestCase):
         actual_update = attribute_fetcher(letter_plugin_context, proofing_user.user_id)
         expected_update = {
             '$set': {
+                "givenName": u"Testaren",
+                "surname": u"Testsson",
+                "displayName": u"John",
                 'nins': [{'number': '123456781235', 'verified': True, 'primary': True}],
                 "letter_proofing_data": [
                     {
