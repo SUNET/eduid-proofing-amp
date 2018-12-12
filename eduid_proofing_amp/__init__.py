@@ -99,6 +99,7 @@ class EmailProofingAMPContext(object):
         ]
         self.WHITELIST_UNSET_ATTRS = [
             'mailAliases',
+            'mail',  # Old format
         ]
 
 
@@ -115,6 +116,7 @@ class PhoneProofingAMPContext(object):
         ]
         self.WHITELIST_UNSET_ATTRS = [
             'phone',
+            'mobile',  # Old format
         ]
 
 

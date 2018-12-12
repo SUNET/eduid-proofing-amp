@@ -7,7 +7,7 @@ here = os.path.abspath(os.path.dirname(__file__))
 README = open(os.path.join(here, 'README.md')).read()
 CHANGES = open(os.path.join(here, 'CHANGES.md')).read()
 
-version = '0.1.1b7'
+version = '0.1.1'
 
 install_requires = [
         'eduid_am >= 0.6.0, < 0.7.0',
