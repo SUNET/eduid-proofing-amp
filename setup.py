@@ -10,7 +10,7 @@ CHANGES = open(os.path.join(here, 'CHANGES.md')).read()
 version = '0.1.2b0'
 
 install_requires = [
-        'eduid_am >= 0.6.0, < 0.7.0',
+        'eduid_am >= 0.6.0',
         'eduid_userdb >= 0.4.0b14',
 ]
 
