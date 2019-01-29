@@ -11,7 +11,6 @@ from eduid_userdb.security import SecurityUser
 from eduid_proofing_amp import attribute_fetcher, oidc_plugin_init, letter_plugin_init, lookup_mobile_plugin_init
 from eduid_proofing_amp import email_plugin_init, phone_plugin_init, personal_data_plugin_init, security_plugin_init
 from eduid_proofing_amp import orcid_plugin_init
-from eduid_am.celery import celery, get_attribute_manager
 
 USER_DATA = {
     'givenName': 'Testaren',
@@ -68,12 +67,12 @@ USER_DATA = {
 class AttributeFetcherOldToNewUsersTests(MongoTestCase):
 
     def setUp(self):
-        super(AttributeFetcherOldToNewUsersTests, self).setUp(celery, get_attribute_manager)
+        super(AttributeFetcherOldToNewUsersTests, self).setUp(init_am=True)
         self.user_data = deepcopy(USER_DATA)
         self.plugin_contexts = [
-            oidc_plugin_init(celery.conf),
-            letter_plugin_init(celery.conf),
-            lookup_mobile_plugin_init(celery.conf)
+            oidc_plugin_init(self.am_settings),
+            letter_plugin_init(self.am_settings),
+            lookup_mobile_plugin_init(self.am_settings)
         ]
         for userdoc in self.amdb._get_all_docs():
             proofing_user = ProofingUser(data=userdoc)
@@ -174,7 +173,7 @@ class AttributeFetcherOldToNewUsersTests(MongoTestCase):
             ],
         })
         proofing_user = ProofingUser(data=self.user_data)
-        letter_plugin_context = letter_plugin_init(celery.conf)
+        letter_plugin_context = letter_plugin_init(self.am_settings)
         letter_plugin_context.private_db.save(proofing_user)
 
         actual_update = attribute_fetcher(letter_plugin_context, proofing_user.user_id)
@@ -338,12 +337,12 @@ class AttributeFetcherOldToNewUsersTests(MongoTestCase):
 class AttributeFetcherNINProofingTests(MongoTestCase):
 
     def setUp(self):
-        super(AttributeFetcherNINProofingTests, self).setUp(celery, get_attribute_manager)
+        super(AttributeFetcherNINProofingTests, self).setUp(init_am=True)
         self.user_data = deepcopy(USER_DATA)
         self.plugin_contexts = [
-            oidc_plugin_init(celery.conf),
-            letter_plugin_init(celery.conf),
-            lookup_mobile_plugin_init(celery.conf)
+            oidc_plugin_init(self.am_settings),
+            letter_plugin_init(self.am_settings),
+            lookup_mobile_plugin_init(self.am_settings)
         ]
         for userdoc in self.amdb._get_all_docs():
             proofing_user = ProofingUser(data=userdoc)
@@ -441,7 +440,7 @@ class AttributeFetcherNINProofingTests(MongoTestCase):
             ],
         })
         proofing_user = ProofingUser(data=self.user_data)
-        letter_plugin_context = letter_plugin_init(celery.conf)
+        letter_plugin_context = letter_plugin_init(self.am_settings)
         letter_plugin_context.private_db.save(proofing_user)
 
         actual_update = attribute_fetcher(letter_plugin_context, proofing_user.user_id)
@@ -584,10 +583,10 @@ class AttributeFetcherNINProofingTests(MongoTestCase):
 class AttributeFetcherEmailProofingTests(MongoTestCase):
 
     def setUp(self):
-        super(AttributeFetcherEmailProofingTests, self).setUp(celery, get_attribute_manager)
+        super(AttributeFetcherEmailProofingTests, self).setUp(init_am=True)
         self.user_data = deepcopy(USER_DATA)
         self.plugin_contexts = [
-            email_plugin_init(celery.conf),
+            email_plugin_init(self.am_settings),
         ]
         #for userdoc in self.amdb._get_all_docs():
         #    proofing_user = ProofingUser(data=userdoc)
@@ -682,10 +681,10 @@ class AttributeFetcherEmailProofingTests(MongoTestCase):
 class AttributeFetcherPhoneProofingTests(MongoTestCase):
 
     def setUp(self):
-        super(AttributeFetcherPhoneProofingTests, self).setUp(celery, get_attribute_manager)
+        super(AttributeFetcherPhoneProofingTests, self).setUp(init_am=True)
         self.user_data = deepcopy(USER_DATA)
         self.plugin_contexts = [
-            phone_plugin_init(celery.conf),
+            phone_plugin_init(self.am_settings),
         ]
         for userdoc in self.amdb._get_all_docs():
             proofing_user = ProofingUser(data=userdoc)
@@ -756,10 +755,10 @@ class AttributeFetcherPhoneProofingTests(MongoTestCase):
 class AttributeFetcherPersonalDataTests(MongoTestCase):
 
     def setUp(self):
-        super(AttributeFetcherPersonalDataTests, self).setUp(celery, get_attribute_manager)
+        super(AttributeFetcherPersonalDataTests, self).setUp(init_am=True)
         self.user_data = deepcopy(USER_DATA)
         self.plugin_contexts = [
-            personal_data_plugin_init(celery.conf),
+            personal_data_plugin_init(self.am_settings),
         ]
         #for userdoc in self.amdb._get_all_docs():
         #    personal_data_user = PersonalDataUser(data=userdoc)
@@ -828,10 +827,10 @@ class AttributeFetcherPersonalDataTests(MongoTestCase):
 class AttributeFetcherSecurityTests(MongoTestCase):
 
     def setUp(self):
-        super(AttributeFetcherSecurityTests, self).setUp(celery, get_attribute_manager)
+        super(AttributeFetcherSecurityTests, self).setUp(init_am=True)
         self.user_data = deepcopy(USER_DATA)
         self.plugin_contexts = [
-            security_plugin_init(celery.conf),
+            security_plugin_init(self.am_settings),
         ]
         #for userdoc in self.amdb._get_all_docs():
         #    security_user = SecurityUser(data=userdoc)
@@ -926,10 +925,10 @@ class AttributeFetcherSecurityTests(MongoTestCase):
 class AttributeFetcherOrcidTests(MongoTestCase):
 
     def setUp(self):
-        super(AttributeFetcherOrcidTests, self).setUp(celery, get_attribute_manager)
+        super(AttributeFetcherOrcidTests, self).setUp(init_am=True)
         self.user_data = deepcopy(USER_DATA)
         self.plugin_contexts = [
-            orcid_plugin_init(celery.conf),
+            orcid_plugin_init(self.am_settings),
         ]
 
         self.maxDiff = None
