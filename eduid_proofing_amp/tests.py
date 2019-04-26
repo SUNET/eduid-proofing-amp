@@ -67,7 +67,10 @@ USER_DATA = {
 class AttributeFetcherOldToNewUsersTests(MongoTestCase):
 
     def setUp(self):
-        super(AttributeFetcherOldToNewUsersTests, self).setUp(init_am=True)
+        am_settings = {
+            'WANT_MONGO_URI': True
+        }
+        super(AttributeFetcherOldToNewUsersTests, self).setUp(init_am=True, am_settings=am_settings)
         self.user_data = deepcopy(USER_DATA)
         self.plugin_contexts = [
             oidc_plugin_init(self.am_settings),
@@ -337,7 +340,10 @@ class AttributeFetcherOldToNewUsersTests(MongoTestCase):
 class AttributeFetcherNINProofingTests(MongoTestCase):
 
     def setUp(self):
-        super(AttributeFetcherNINProofingTests, self).setUp(init_am=True)
+        am_settings = {
+            'WANT_MONGO_URI': True
+        }
+        super(AttributeFetcherNINProofingTests, self).setUp(init_am=True, am_settings=am_settings)
         self.user_data = deepcopy(USER_DATA)
         self.plugin_contexts = [
             oidc_plugin_init(self.am_settings),
@@ -583,7 +589,10 @@ class AttributeFetcherNINProofingTests(MongoTestCase):
 class AttributeFetcherEmailProofingTests(MongoTestCase):
 
     def setUp(self):
-        super(AttributeFetcherEmailProofingTests, self).setUp(init_am=True)
+        am_settings = {
+            'WANT_MONGO_URI': True
+        }
+        super(AttributeFetcherEmailProofingTests, self).setUp(init_am=True, am_settings=am_settings)
         self.user_data = deepcopy(USER_DATA)
         self.plugin_contexts = [
             email_plugin_init(self.am_settings),
@@ -681,7 +690,10 @@ class AttributeFetcherEmailProofingTests(MongoTestCase):
 class AttributeFetcherPhoneProofingTests(MongoTestCase):
 
     def setUp(self):
-        super(AttributeFetcherPhoneProofingTests, self).setUp(init_am=True)
+        am_settings = {
+            'WANT_MONGO_URI': True
+        }
+        super(AttributeFetcherPhoneProofingTests, self).setUp(init_am=True, am_settings=am_settings)
         self.user_data = deepcopy(USER_DATA)
         self.plugin_contexts = [
             phone_plugin_init(self.am_settings),
@@ -755,7 +767,10 @@ class AttributeFetcherPhoneProofingTests(MongoTestCase):
 class AttributeFetcherPersonalDataTests(MongoTestCase):
 
     def setUp(self):
-        super(AttributeFetcherPersonalDataTests, self).setUp(init_am=True)
+        am_settings = {
+            'WANT_MONGO_URI': True
+        }
+        super(AttributeFetcherPersonalDataTests, self).setUp(init_am=True, am_settings=am_settings)
         self.user_data = deepcopy(USER_DATA)
         self.plugin_contexts = [
             personal_data_plugin_init(self.am_settings),
@@ -827,7 +842,10 @@ class AttributeFetcherPersonalDataTests(MongoTestCase):
 class AttributeFetcherSecurityTests(MongoTestCase):
 
     def setUp(self):
-        super(AttributeFetcherSecurityTests, self).setUp(init_am=True)
+        am_settings = {
+            'WANT_MONGO_URI': True
+        }
+        super(AttributeFetcherSecurityTests, self).setUp(init_am=True, am_settings=am_settings)
         self.user_data = deepcopy(USER_DATA)
         self.plugin_contexts = [
             security_plugin_init(self.am_settings),
@@ -925,7 +943,10 @@ class AttributeFetcherSecurityTests(MongoTestCase):
 class AttributeFetcherOrcidTests(MongoTestCase):
 
     def setUp(self):
-        super(AttributeFetcherOrcidTests, self).setUp(init_am=True)
+        am_settings = {
+            'WANT_MONGO_URI': True
+        }
+        super(AttributeFetcherOrcidTests, self).setUp(init_am=True, am_settings=am_settings)
         self.user_data = deepcopy(USER_DATA)
         self.plugin_contexts = [
             orcid_plugin_init(self.am_settings),
