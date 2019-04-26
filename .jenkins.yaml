@@ -1,9 +1,25 @@
-python_module: eduid_proofing_amp
-python_source_directory: eduid_proofing_amp
-publish_over_ssh:
-  - pypi.sunet.se
+builders:
+  - script
 upstream:
   - eduid-userdb
+triggers:
+  cron: "@weekly"
 slack:
-  room: eduid-builds
+  room: "eduid-builds"
+pre_build_script:
+  - "docker pull docker.sunet.se/eduid/redis:latest"
+  - "docker pull docker.sunet.se/library/etcd:v2.2.5"
+  - "docker pull docker.sunet.se/eduid/mongodb:latest"
+script:
+  - "python3.7 -m venv venv"
+  - ". venv/bin/activate"
+  - "pip install -U setuptools wheel mypy"
+  - "pip install --index-url https://pypi.sunet.se -r requirements/dev.txt"
+  - "pip freeze"
+  - "nosetests"
+ #- "mypy --ignore-missing-imports eduid_signup_amp"
+  - "python setup.py sdist bdist_wheel --universal"
+publish_over_ssh:
+  - pypi.sunet.se
 clean_workspace: true
+
